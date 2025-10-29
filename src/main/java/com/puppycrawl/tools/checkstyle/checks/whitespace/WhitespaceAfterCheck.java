@@ -102,6 +102,7 @@ public class WhitespaceAfterCheck
             TokenTypes.LAMBDA,
             TokenTypes.LITERAL_WHEN,
             TokenTypes.ANNOTATIONS,
+            TokenTypes.RBRACK,
         };
     }
 
@@ -118,6 +119,9 @@ public class WhitespaceAfterCheck
             if (!isFollowedByWhitespace(targetAST, line)) {
                 log(targetAST, MSG_WS_TYPECAST);
             }
+        }
+        else if (ast.getType() == TokenTypes.RBRACK) {
+            visitRbrack(ast);
         }
         else if (ast.getType() == TokenTypes.ANNOTATIONS) {
             if (ast.getFirstChild() != null) {
@@ -161,6 +165,28 @@ public class WhitespaceAfterCheck
                 || Character.isWhitespace(codePoint);
         }
         return followedByWhitespace;
+    }
+
+    private void visitRbrack(DetailAST rbrackAst) {
+        final DetailAST parentAst = rbrackAst.getParent();
+        // Skip anything that isn't a declaration
+        // For instance arr[0]++;
+        if (parentAst.getType() != TokenTypes.ARRAY_DECLARATOR) {
+            return;
+        }
+        final DetailAST parentAstNextSibling = parentAst.getNextSibling();
+        // Skip chains of [][][]
+        if (parentAstNextSibling != null
+            && parentAstNextSibling.getType() == TokenTypes.ARRAY_DECLARATOR) {
+            return;
+        }
+
+        // standard
+        final int[] line = getLineCodePoints(rbrackAst.getLineNo() - 1);
+        if (!isFollowedByWhitespace(rbrackAst, line)) {
+            final Object[] message = {rbrackAst.getText()};
+            log(rbrackAst, MSG_WS_NOT_FOLLOWED, message);
+        }
     }
 
 }

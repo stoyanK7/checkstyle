@@ -413,4 +413,17 @@ public class WhitespaceAfterCheckTest
         verifyWithInlineConfigParser(
             getPath("example2/package-info.java"), expected);
     }
+
+    @Test
+    public void testWhitespaceAfterRightBracket() throws Exception {
+        final String[] expected = {
+            "11:9: " + getCheckMessage(MSG_WS_NOT_FOLLOWED, "]"),
+            "13:11: " + getCheckMessage(MSG_WS_NOT_FOLLOWED, "]"),
+            "15:13: " + getCheckMessage(MSG_WS_NOT_FOLLOWED, "]"),
+            "21:23: " + getCheckMessage(MSG_WS_NOT_FOLLOWED, "+"),
+            "23:14: " + getCheckMessage(MSG_WS_NOT_FOLLOWED, "="),
+        };
+        verifyWithInlineConfigParser(
+            getPath("InputWhitespaceAfterRightBracket.java"), expected);
+    }
 }

@@ -1368,15 +1368,7 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         literalInstanceOf.addChild(visit(ctx.expr()));
         final ParseTree patternOrType = ctx.getChild(2);
 
-        final DetailAstImpl patternDef;
-        if (patternOrType instanceof JavaLanguageParser.ParenPatternContext) {
-            // Parenthesized pattern has a `PATTERN_DEF` parent
-            patternDef = createImaginary(TokenTypes.PATTERN_DEF);
-            patternDef.addChild(visit(patternOrType));
-        }
-        else {
-            patternDef = visit(patternOrType);
-        }
+        final DetailAstImpl patternDef = visit(patternOrType);
         literalInstanceOf.addChild(patternDef);
         return literalInstanceOf;
     }
@@ -1996,19 +1988,10 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
 
     @Override
     public DetailAstImpl visitGuardedPattern(JavaLanguageParser.GuardedPatternContext ctx) {
-        final DetailAstImpl guardAstNode = flattenedTree(ctx.guard());
+        final DetailAstImpl guardAstNode = create(ctx.LITERAL_WHEN());
         guardAstNode.addChild(visit(ctx.primaryPattern()));
         guardAstNode.addChild(visit(ctx.expression()));
         return guardAstNode;
-    }
-
-    @Override
-    public DetailAstImpl visitParenPattern(JavaLanguageParser.ParenPatternContext ctx) {
-        final DetailAstImpl lparen = create(ctx.LPAREN());
-        final ParseTree innerPattern = ctx.getChild(1);
-        lparen.addChild(visit(innerPattern));
-        lparen.addChild(create(ctx.RPAREN()));
-        return lparen;
     }
 
     @Override

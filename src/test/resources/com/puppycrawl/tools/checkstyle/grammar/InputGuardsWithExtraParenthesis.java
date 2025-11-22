@@ -1,9 +1,8 @@
-// non-compiled with javac: compiling on jdk before Java21 (java19)
-package com.puppycrawl.tools.checkstyle.grammar.java19;
+package com.puppycrawl.tools.checkstyle.grammar;
 
 import java.util.Objects;
 
-public class InputJava19GuardsWithExtraParenthesis {
+public class InputGuardsWithExtraParenthesis {
 
     record Box<V>(V v) {
         static int x = 5;

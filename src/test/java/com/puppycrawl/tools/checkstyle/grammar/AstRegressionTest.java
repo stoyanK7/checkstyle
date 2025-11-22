@@ -290,6 +290,12 @@ public class AstRegressionTest extends AbstractTreeTestSupport {
                 getPath("InputPatternsAnnotationsOnBinding.java"));
     }
 
+    @Test
+    public void testGuardsWithExtraParenthesis() throws Exception {
+        verifyAst(getPath("ExpectedGuardsWithExtraParenthesis.txt"),
+                getPath("InputGuardsWithExtraParenthesis.java"));
+    }
+
     private static void verifyAstRaw(String expectedTextPrintFileName, String actualJava)
             throws Exception {
         verifyAstRaw(expectedTextPrintFileName, actualJava, JavaParser.Options.WITHOUT_COMMENTS);

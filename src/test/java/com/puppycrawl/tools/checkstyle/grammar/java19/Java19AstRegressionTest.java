@@ -55,12 +55,6 @@ public class Java19AstRegressionTest extends AbstractTreeTestSupport {
     }
 
     @Test
-    public void testGuardsWithExtraParenthesis() throws Exception {
-        verifyAst(getNonCompilablePath("ExpectedJava19GuardsWithExtraParenthesis.txt"),
-                getNonCompilablePath("InputJava19GuardsWithExtraParenthesis.java"));
-    }
-
-    @Test
     public void testBindingWithModifiers() throws Exception {
         verifyAst(getNonCompilablePath("ExpectedJava19BindingWithModifiers.txt"),
                 getNonCompilablePath("InputJava19BindingWithModifiers.java"));

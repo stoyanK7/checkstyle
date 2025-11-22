@@ -521,3 +521,6 @@
 <module name="BeforeExecutionExclusionFileFilter">
   <property name="fileNamePattern" value="[\\/]home[\\/]stoyan[\\/]Documents[\\/]github[\\/]checkstyle[\\/].ci-temp[\\/]contribution[\\/]checkstyle-tester[\\/]src[\\/]main[\\/]java[\\/]openjdk17[\\/]test[\\/]langtools[\\/]tools[\\/]javac[\\/]patterns[\\/]RawTypeBindingWarning.java$"/>
 </module>
+<module name="BeforeExecutionExclusionFileFilter">
+  <property name="fileNamePattern" value="[\\/]home[\\/]stoyan[\\/]Documents[\\/]github[\\/]checkstyle[\\/].ci-temp[\\/]contribution[\\/]checkstyle-tester[\\/]src[\\/]main[\\/]java[\\/]openjdk17[\\/]test[\\/]langtools[\\/]tools[\\/]javac[\\/]patterns[\\/]GuardsErrors.java$"/>
+</module>

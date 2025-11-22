@@ -745,3 +745,6 @@
 <module name="BeforeExecutionExclusionFileFilter">
   <property name="fileNamePattern" value="[\\/]home[\\/]stoyan[\\/]Documents[\\/]github[\\/]checkstyle[\\/].ci-temp[\\/]contribution[\\/]checkstyle-tester[\\/]src[\\/]main[\\/]java[\\/]openjdk25[\\/]test[\\/]langtools[\\/]tools[\\/]javac[\\/]patterns[\\/]Parenthesized.java$"/>
 </module>
+<module name="BeforeExecutionExclusionFileFilter">
+  <property name="fileNamePattern" value="$"/>
+</module>

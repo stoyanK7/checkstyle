@@ -17,15 +17,15 @@ public class InputJava19GuardsWithExtraParenthesis {
                     when (("test".equals(s)) && ((int) Box.x != 7))  -> 1;
             case Box<Box<String>>(Box<String>(String s))
                     when (boolean) "test".equals(s) && (boolean) Objects.equals(s, "box") -> (1);
-            case Box<Box<String>>(Box<String>(String s)box)
-                    when "test".equals(s) && Objects.equals(box.v, "box")
+            case Box<Box<String>>(Box<String>(String s))
+                    when "test".equals(s) && Objects.equals(s, "box")
                         || "something else".equals(s) -> 1;
             case Box<Box<String>>(Box<String>(String s))
                     when "test".equals(s) -> 1;
             case Box<Box<String>>(Box<?> b2)
                     when "test".equals(b2.v) -> 1;
-            case Box<Box<String>>(Object o) b2
-                    when b2.v != null && "whatever".equals(o.toString())-> 1;
+            case Box<Box<String>>(Object o)
+                    when o != null && "whatever".equals(o.toString()) -> 1;
             default -> -1;
         };
     }

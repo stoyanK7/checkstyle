@@ -1962,8 +1962,7 @@ public final class JavaAstVisitor extends JavaLanguageParserBaseVisitor<DetailAs
         final JavaLanguageParser.InnerPatternContext innerPattern = ctx.innerPattern();
         final ParserRuleContext primaryPattern = innerPattern.primaryPattern();
         final ParserRuleContext recordPattern = innerPattern.recordPattern();
-        final boolean isSimpleTypePattern = primaryPattern != null
-                && primaryPattern.getChild(0) instanceof JavaLanguageParser.TypePatternContext;
+        final boolean isSimpleTypePattern = primaryPattern != null;
 
         final DetailAstImpl pattern;
 

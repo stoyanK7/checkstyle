@@ -54,26 +54,23 @@ public class InputJava19GuardsWithExtraParenthesis {
         if (when instanceof when<String>(when<String> w1)) {
             return w1.when.when().when;
         }
-        else if (when instanceof when<String>(when<String>(when<String> s1p))) {
+        else if (when instanceof when<String>(when<String>(when<String> s1))) {
             if ("s1".equals(s1)) {
                 return s1;
-            } else {
-                return w1;
             }
         }
-        else if ((when instanceof when<String>(when<String>(when<String> s1p)))
-                    && s1.toString().equals(w1.toString())) {
+        else if ((when instanceof when<String>(when<String>(when<String> s1)))
+                    && s1.toString().equals(s1.toString())) {
             if ("s1".equals(s1)) {
                 return s1;
-            } else {
-                return w1;
             }
         }
-        else if (!(when instanceof when<String>(when<String>(when<String> s1p)))) {
+        else if (!(when instanceof when<String>(when<String>(when<String> s1)))) {
             return new Object();
         }
         else {
-            return s1.toString().equals(w1.toString());
+            return s1.toString().equals(s1.toString());
         }
+        return null;
     }
 }

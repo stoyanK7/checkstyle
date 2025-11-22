@@ -11,12 +11,12 @@ public class InputJava19GuardsWithExtraParenthesis {
 
     int m1(Box<Box<String>> b) {
         return switch (b) {
-            case Box<Box<String>>(Box<String>(String s)box)
-                    when (("test".equals(s) && box.x != 7))  -> 1;
-            case (Box<Box<String>>(Box<String>(String s)box))
-                    when (("test".equals(s)) && ((int) box.x != 7))  -> 1;
-            case Box<Box<String>>((Box<String>((String s))box))
-                    when (boolean)"test".equals(s) && (boolean)Objects.equals(box.v, "box") -> (1);
+            case Box<Box<String>>(Box<String>(String s))
+                    when (("test".equals(s) && Box.x != 7))  -> 1;
+            case Box<Box<String>>(Box<String>(String s))
+                    when (("test".equals(s)) && ((int) Box.x != 7))  -> 1;
+            case Box<Box<String>>(Box<String>(String s))
+                    when (boolean) "test".equals(s) && (boolean) Objects.equals(s, "box") -> (1);
             case Box<Box<String>>(Box<String>(String s)box)
                     when "test".equals(s) && Objects.equals(box.v, "box")
                         || "something else".equals(s) -> 1;

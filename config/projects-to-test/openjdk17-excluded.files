@@ -515,3 +515,6 @@
 <module name="BeforeExecutionExclusionFileFilter">
   <property name="fileNamePattern" value="[\\/]test[\\/]langtools[\\/]tools[\\/]javac[\\/]patterns[\\/]SwitchErrors.java$"/>
 </module>
+<module name="BeforeExecutionExclusionFileFilter">
+  <property name="fileNamePattern" value="[\\/]test[\\/]langtools[\\/]tools[\\/]javac[\\/]patterns[\\/]Parenthesized.java$"/>
+</module>

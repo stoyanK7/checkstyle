@@ -39,14 +39,14 @@ public class InputJava19GuardsWithExtraParenthesis {
         case when<when<T>>(when<when<T>> w1)
                   when (((w1.when.when.when.when.when.equals(null))))
                         -> 2;
-        case when<when<T>>(when<when<T>>(when<when<T>> w2) w1)
-                  when (((w1.when.when.when.when.when.equals(null))))
-                        || ((when)w2).equals(((when)w1))-> 2;
-        case when<when<T>>(when<when<T>>(when<when<T>> w2) w1)
+        case when<when<T>>(when<when<T>>(when<when<T>> w2))
+                  when (((w2.when().when().when().when().when().equals(null))))
+                        || ((when) w2).equals(((when) w2)) -> 2;
+        case when<when<T>>(when<when<T>>(when<when<T>> w2))
                   when when != null
-                        || ((when)w2).equals(((when)w1))-> 2;
+                        || ((when) w2).equals(((when) when)) -> 2;
         case when<when<T>>(Object w) when when != null -> 9;
-          case default, null -> 1;
+          case null, default -> 1;
         };
     }
 
@@ -54,14 +54,14 @@ public class InputJava19GuardsWithExtraParenthesis {
         if (when instanceof when<String>(when<String> w1)) {
             return w1.when.when().when;
         }
-        else if (when instanceof when<String>(when<String>(when<String> s1)) w1) {
+        else if (when instanceof when<String>(when<String>(when<String> s1p))) {
             if ("s1".equals(s1)) {
                 return s1;
             } else {
                 return w1;
             }
         }
-        else if (when instanceof when<String>(when<String>(when<String> s1)) w1
+        else if ((when instanceof when<String>(when<String>(when<String> s1p)))
                     && s1.toString().equals(w1.toString())) {
             if ("s1".equals(s1)) {
                 return s1;
@@ -69,7 +69,7 @@ public class InputJava19GuardsWithExtraParenthesis {
                 return w1;
             }
         }
-        else if (!(when instanceof when<String>(when<String>(when<String> s1)) w1)) {
+        else if (!(when instanceof when<String>(when<String>(when<String> s1p)))) {
             return new Object();
         }
         else {

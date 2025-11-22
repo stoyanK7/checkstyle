@@ -536,3 +536,6 @@
 <module name="BeforeExecutionExclusionFileFilter">
   <property name="fileNamePattern" value="[\\/]test[\\/]langtools[\\/]tools[\\/]javac[\\/]switchexpr[\\/]ParserRecovery.java$"/>
 </module>
+<module name="BeforeExecutionExclusionFileFilter">
+  <property name="fileNamePattern" value="[\\/]home[\\/]stoyan[\\/]Documents[\\/]github[\\/]checkstyle[\\/].ci-temp[\\/]contribution[\\/]checkstyle-tester[\\/]src[\\/]main[\\/]java[\\/]openjdk20[\\/]test[\\/]langtools[\\/]tools[\\/]javac[\\/]patterns[\\/]Parenthesized.java$"/>
+</module>

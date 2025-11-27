@@ -233,19 +233,33 @@ public class Example5 {}
 </code></pre></div>
         <hr class="example-separator"/>
         <p id="Example6-config">
-          To configure the check so that it rejects module names not matching regular
-          expression <code>^java\.(base|logging)</code>:
+          To configure the check so that it rejects modules <code>java.base</code> and
+          <code>java.logging</code>:
         </p>
         <div class="wrapper"><pre class="prettyprint"><code class="language-xml">
 &lt;module name="Checker"&gt;
   &lt;module name="TreeWalker"&gt;
     &lt;module name="IllegalImport"&gt;
-      &lt;property name="regexp" value="true"/&gt;
-      &lt;property name="illegalModules"
-        value="^java\.(base|logging)"/&gt;
+      &lt;property name="illegalModules" value="java.base, java.logging"/&gt;
     &lt;/module&gt;
   &lt;/module&gt;
 &lt;/module&gt;
+</code></pre></div>
+        <p id="Example6-code">
+          The following example shows module with two illegal module imports:
+          <ul>
+            <li><b>java.base</b>, <code>illegalModules</code> property contains this module</li>
+            <li><b>java.logging</b>, <code>illegalModules</code> property contains this module</li>
+            </ul>
+        </p>
+        <div class="wrapper"><pre class="prettyprint"><code class="language-java">
+import module java.base; // violation, 'Illegal import'
+import module java.xml;
+import module java.sql;
+import module java.logging; // violation, 'Illegal import'
+import module java.se;
+
+public class Example6 {}
 </code></pre></div>
       </subsection>
 

@@ -2,9 +2,7 @@
 <module name="Checker">
   <module name="TreeWalker">
     <module name="IllegalImport">
-      <property name="regexp" value="true"/>
-      <property name="illegalModules"
-        value="^java\.(base|logging)"/>
+      <property name="illegalModules" value="java.base, java.logging"/>
     </module>
   </module>
 </module>

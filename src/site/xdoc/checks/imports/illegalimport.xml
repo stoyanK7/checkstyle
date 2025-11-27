@@ -231,6 +231,22 @@ import sun.misc.*; // violation, 'Illegal import'
 
 public class Example5 {}
 </code></pre></div>
+        <hr class="example-separator"/>
+        <p id="Example6-config">
+          To configure the check so that it rejects module names not matching regular
+          expression <code>^java\.(base|logging)</code>:
+        </p>
+        <div class="wrapper"><pre class="prettyprint"><code class="language-xml">
+&lt;module name="Checker"&gt;
+  &lt;module name="TreeWalker"&gt;
+    &lt;module name="IllegalImport"&gt;
+      &lt;property name="regexp" value="true"/&gt;
+      &lt;property name="illegalModules"
+        value="^java\.(base|logging)"/&gt;
+    &lt;/module&gt;
+  &lt;/module&gt;
+&lt;/module&gt;
+</code></pre></div>
       </subsection>
 
       <subsection name="Example of Usage" id="IllegalImport_Example_of_Usage">

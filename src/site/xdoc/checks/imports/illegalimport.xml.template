@@ -146,7 +146,7 @@
         </p>
         <macro name="example">
           <param name="path"
-                 value="resources-noncompilable/com/puppycrawl/tools/checkstyle/checks/imports/illegalimport/Example6java"/>
+                 value="resources-noncompilable/com/puppycrawl/tools/checkstyle/checks/imports/illegalimport/Example6.java"/>
           <param name="type" value="config"/>
         </macro>
       </subsection>

@@ -165,4 +165,13 @@ public class IllegalImportCheckTest extends AbstractModuleTestSupport {
                 getPath("InputIllegalImportDefault7.java"), expected);
     }
 
+    @Test
+    public void testIllegalModulesNoRegex() throws Exception {
+        final String[] expected = {
+                "14:1: " + getCheckMessage(MSG_KEY, "java.base"),
+                "17:1: " + getCheckMessage(MSG_KEY, "java.logging"),
+        };
+        verifyWithInlineConfigParser(
+                getNonCompilablePath("InputIllegalImportModuleNoRegex.java"), expected);
+    }
 }

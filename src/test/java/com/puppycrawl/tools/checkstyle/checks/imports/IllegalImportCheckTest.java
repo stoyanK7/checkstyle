@@ -174,4 +174,16 @@ public class IllegalImportCheckTest extends AbstractModuleTestSupport {
         verifyWithInlineConfigParser(
                 getNonCompilablePath("InputIllegalImportModuleNoRegex.java"), expected);
     }
+
+    @Test
+    public void testIllegalModulesWithRegex() throws Exception {
+        final String[] expected = {
+                "14:1: " + getCheckMessage(MSG_KEY, "java.base"),
+                "17:1: " + getCheckMessage(MSG_KEY, "java.logging"),
+        };
+        verifyWithInlineConfigParser(
+                getNonCompilablePath("InputIllegalImportModuleWithRegex.java"), expected);
+    }
+
 }
+

@@ -2,8 +2,8 @@
 IllegalImport
 illegalPkgs = (default)sun
 illegalClasses = (default)
-illegalModules = java.base,java.logging
-regexp = (default)false
+illegalModules = ^java\.(base|logging)$
+regexp = true
 
 
 */
@@ -17,4 +17,4 @@ import module java.sql;
 import module java.logging; // violation 'Illegal import - java.logging'
 import module java.se;
 
-class InputIllegalImportModuleNoRegex {}
+class InputIllegalImportModuleWithRegex {}

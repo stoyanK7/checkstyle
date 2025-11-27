@@ -83,9 +83,9 @@ public class IllegalImportCheckTest extends AbstractModuleTestSupport {
                 new IllegalImportCheck();
         final int[] actual = testCheckObject.getAcceptableTokens();
         final int[] expected = {
-                TokenTypes.IMPORT,
-                TokenTypes.STATIC_IMPORT,
-                TokenTypes.MODULE_IMPORT,
+            TokenTypes.IMPORT,
+            TokenTypes.STATIC_IMPORT,
+            TokenTypes.MODULE_IMPORT,
         };
 
         assertWithMessage("Default acceptable tokens are invalid")
@@ -168,8 +168,8 @@ public class IllegalImportCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIllegalModulesNoRegex() throws Exception {
         final String[] expected = {
-                "14:1: " + getCheckMessage(MSG_KEY, "java.base"),
-                "17:1: " + getCheckMessage(MSG_KEY, "java.logging"),
+            "14:1: " + getCheckMessage(MSG_KEY, "java.base"),
+            "17:1: " + getCheckMessage(MSG_KEY, "java.logging"),
         };
         verifyWithInlineConfigParser(
                 getNonCompilablePath("InputIllegalImportModuleNoRegex.java"), expected);
@@ -178,8 +178,8 @@ public class IllegalImportCheckTest extends AbstractModuleTestSupport {
     @Test
     public void testIllegalModulesWithRegex() throws Exception {
         final String[] expected = {
-                "14:1: " + getCheckMessage(MSG_KEY, "java.base"),
-                "17:1: " + getCheckMessage(MSG_KEY, "java.logging"),
+            "14:1: " + getCheckMessage(MSG_KEY, "java.base"),
+            "17:1: " + getCheckMessage(MSG_KEY, "java.logging"),
         };
         verifyWithInlineConfigParser(
                 getNonCompilablePath("InputIllegalImportModuleWithRegex.java"), expected);

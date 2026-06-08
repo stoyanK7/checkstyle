@@ -486,7 +486,7 @@ public final class SiteUtil {
                                                              Object instance)
             throws MacroExecutionException {
         final Map<String, PropertyDetails> superClassPropertyData = buildSuperClassPropertyData();
-        processModule(moduleName, modulePath, instance, properties);
+        processModule(moduleName, modulePath, instance, properties, Path.of(""));
 
         final Map<String, PropertyDetails> currentPropertiesDetails =
                 new TreeMap<>(JavadocScraperResultUtil.getPropertiesDetails());
@@ -621,7 +621,7 @@ public final class SiteUtil {
                 throw new MacroExecutionException("Failed to find class: " + classFullName, exc);
             }
 
-            processModule(superclassName, superclassPath, null, properties);
+            processModule(superclassName, superclassPath, null, properties, Path.of(""));
             result.putAll(JavadocScraperResultUtil.getPropertiesDetails());
         }
         return result;
@@ -639,7 +639,7 @@ public final class SiteUtil {
         final Object instance = getModuleInstance(moduleName);
         final Set<String> properties = getPropertiesForDocumentation(instance.getClass(),
                 instance);
-        processModule(moduleName, modulePath, instance, properties);
+        processModule(moduleName, modulePath, instance, properties, Path.of(""));
     }
 
     /**
@@ -650,12 +650,13 @@ public final class SiteUtil {
      * @param modulePath the module Path.
      * @param instance the instance of the module.
      * @param properties the properties of the module.
+     * @param checkstylePath path to the checkstyle project.
      * @throws MacroExecutionException if an error occurs during processing.
      */
     private static void processModule(String moduleName, Path modulePath, Object instance,
-                                      Set<String> properties)
+                                      Set<String> properties, Path checkstylePath)
             throws MacroExecutionException {
-        final Path resolvedPath = Path.of("").toAbsolutePath()
+        final Path resolvedPath = checkstylePath.toAbsolutePath()
                 .resolve(modulePath.toString().replace('\\', '/'))
                 .normalize();
         if (!Files.isRegularFile(resolvedPath)) {

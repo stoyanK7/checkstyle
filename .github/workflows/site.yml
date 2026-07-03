@@ -4,18 +4,10 @@
 # Workflow starts when:
 # 1) issue comment - created, edited
 #
-# Requirements:
-# 1) secrets.AWS_ACCESS_KEY_ID - access key for AWS S3 service user
-# 2) secrets.AWS_SECRET_ACCESS_KEY - security access key for AWS S3 service user
-#
 # If you need to change bucket name or region, change AWS_REGION and AWS_BUCKET_NAME variables.
 # For another bucket, you will need to change the secrets.
 #####################################################################################
 name: "Site"
-
-env:
-  AWS_REGION: "us-east-2"
-  AWS_BUCKET_NAME: "checkstyle-diff-reports"
 
 on:
   issue_comment:
@@ -131,18 +123,12 @@ jobs:
     needs: [ parse_pr_info, generate_site ]
     runs-on: ubuntu-latest
     outputs:
-      message: ${{ steps.out.outputs.message}}
+      message: ${{ steps.out.outputs.message }}
     steps:
       - name: Checkout master branch
         uses: actions/checkout@v7
         with:
           repository: checkstyle/checkstyle
-
-      - name: Setup local maven cache
-        uses: actions/cache/restore@v6
-        with:
-          path: ~/.m2/repository
-          key: checkstyle-maven-cache-${{ hashFiles('**/pom.xml') }}
 
       - name: Download generated site artifact
         uses: actions/download-artifact@v8
@@ -150,31 +136,19 @@ jobs:
           name: checkstyle-site-${{ github.run_id }}
           path: .ci-temp/checkstyle/target/site
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v6
+      - name: Upload site artifact
+        id: upload-site
+        uses: actions/upload-artifact@v7
         with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
-      - name: Copy site to AWS S3 Bucket
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          bash
-          TIME=$(date +%Y%m%d%H%M%S)
-          FOLDER="${{needs.parse_pr_info.outputs.commit_sha}}_$TIME"
-          SITE=".ci-temp/checkstyle/target/site"
-          LINK="https://${{env.AWS_BUCKET_NAME}}.s3.${{env.AWS_REGION}}.amazonaws.com"
-          aws s3 cp "$SITE" "s3://${{env.AWS_BUCKET_NAME}}/$FOLDER/" --recursive
-          echo "$LINK/$FOLDER/index.html" > .ci-temp/message
-          PR_NUMBER="${{ inputs.pr-number || github.event.issue.number }}"
-          ./.ci/generate-extra-site-links.sh "$PR_NUMBER" "$LINK/$FOLDER"
+          name: checkstyle-site-${{ github.run_id }}
+          path: .ci-temp/checkstyle/target/site
+          retention-days: 3
+          if-no-files-found: error
 
       - name: Set output
         id: out
         run: |
-          ./.ci/append-to-github-output.sh "message" "$(cat .ci-temp/message)"
+          ./.ci/append-to-github-output.sh "message" "Generated site artifact: ${{ steps.upload-site.outputs.artifact-url }}"
 
   # should be always last step
   send_message:

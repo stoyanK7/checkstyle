@@ -22,14 +22,31 @@ env:
   EXTRACTOR_VERSION: 2024-10-08
   DIFF_TOOL_VERSION: "1.0-2025-01-30"
   PATCH_DIFF_TOOL_VERSION: "0.1-SNAPSHOT"
-  CACHE_KEY: "regression-report-${{ github.sha }}-${{ github.event.comment.id }}"
+  CACHE_KEY: "regression-report-${{ github.sha }}-${{ github.run_id }}"
   GENERATED_CONFIGS_PATH: generated_configs
   LOCAL_CONFIG_BASE_PATH: "src/main/resources"
   LOCAL_PROJECTS_FILE_PATH: "config/list-of-projects.yml"
+  PR_URL: >-
+    ${{
+      github.event.issue.pull_request.url
+      || format('https://api.github.com/repos/{0}/pulls/{1}',
+                github.repository,
+                inputs.pr-number)
+    }}
 
 on:
   issue_comment:
     types: [ created ]
+  workflow_dispatch:
+    inputs:
+      pr-number:
+        description: 'PR number'
+        required: true
+        type: string
+      trigger-phrase:
+        description: 'Same command text normally written as a PR comment'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -43,8 +60,8 @@ concurrency:
 jobs:
   check_pr_status:
     if: |
-      github.event.issue.pull_request
-      && (startsWith(github.event.comment.body, 'Github, generate report for ')
+      (github.event.issue.pull_request
+        && (startsWith(github.event.comment.body, 'Github, generate report for ')
           ||  startsWith(github.event.comment.body, 'GitHub, generate report for ')
           ||  startsWith(github.event.comment.body,
                          'Github, generate report for configs in PR description')
@@ -57,14 +74,29 @@ jobs:
           ||  startsWith(github.event.comment.body,
                          'Github, generate baseline report')
           ||  startsWith(github.event.comment.body,
-                         'GitHub, generate baseline report'))
+                         'GitHub, generate baseline report')))
+      || (github.event_name == 'workflow_dispatch'
+        && (startsWith(inputs.trigger-phrase, 'Github, generate report for ')
+          ||  startsWith(inputs.trigger-phrase, 'GitHub, generate report for ')
+          ||  startsWith(inputs.trigger-phrase,
+                         'Github, generate report for configs in PR description')
+          ||  startsWith(inputs.trigger-phrase,
+                         'GitHub, generate report for configs in PR description')
+          ||  startsWith(inputs.trigger-phrase,
+                         'Github, generate report by config from')
+          ||  startsWith(inputs.trigger-phrase,
+                         'GitHub, generate report by config from')
+          ||  startsWith(inputs.trigger-phrase,
+                         'Github, generate baseline report')
+          ||  startsWith(inputs.trigger-phrase,
+                         'GitHub, generate baseline report')))
 
     runs-on: ubuntu-latest
     steps:
       - name: Check PR status
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ github.event.issue.pull_request.url }}
+          PR_URL: ${{ env.PR_URL }}
         run: |
           PR_STATE=$(curl --fail-with-body -s -H "Authorization: token $GITHUB_TOKEN" \
                      -H "Accept: application/vnd.github.v3+json" \
@@ -88,7 +120,7 @@ jobs:
         id: get_pr_details
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_URL: ${{ github.event.issue.pull_request.url }}
+          PR_URL: ${{ env.PR_URL }}
         run: |
           PR_INFO="$(curl --fail-with-body -s -H "Authorization: token $GITHUB_TOKEN" "$PR_URL")"
           BRANCH="$(echo "$PR_INFO" | jq -r .head.ref)"
@@ -145,6 +177,7 @@ jobs:
       config_path: ${{ steps.parse.outputs.config_path }}
     steps:
       - name: React to comment
+        if: github.event_name == 'issue_comment'
         uses: actions/github-script@v9
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -170,7 +203,7 @@ jobs:
       - name: Parse comment
         id: parse
         env:
-          COMMENT_BODY: ${{ github.event.comment.body }}
+          COMMENT_BODY: ${{ github.event.comment.body || inputs.trigger-phrase }}
         run: |
           NAME='^Git[Hh]ub,'
           PATTERN_FOR_DESCRIPTION=$NAME' generate report for configs in PR description[[:space:]]*$'
@@ -373,12 +406,15 @@ jobs:
 
       - name: Getting PR description
         env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          PULL_REQUEST_URL: ${{ github.event.issue.pull_request.url }}
+          PULL_REQUEST_URL: ${{ env.PR_URL }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p .ci-temp
-          # convert windows line endings to unix in event text
+          ISSUE_BODY=$(curl --fail-with-body -s \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "$PULL_REQUEST_URL" | jq -r .body)
+      
           echo "$ISSUE_BODY" > .ci-temp/windows.txt
           tr -d '\15\32' < .ci-temp/windows.txt > .ci-temp/text
 
@@ -1031,5 +1067,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
-          issue-number: ${{ github.event.issue.number }}
+          issue-number: ${{ github.event.issue.number || inputs.pr-number }}
           body: ${{ steps.out.outputs.message }}

@@ -22,6 +22,12 @@ env:
 on:
   issue_comment:
     types: [ created, edited ]
+  workflow_dispatch:
+    inputs:
+      pr-number:
+        description: 'PR number'
+        required: true
+        type: string
 
 permissions:
   contents: read

@@ -109,13 +109,13 @@ jobs:
       - name: Checkout master branch
         uses: actions/checkout@v7
         with:
-          repository: checkstyle/checkstyle
+          repository: stoyanK7/checkstyle
           path: .ci-temp/checkstyle
 
       - name: Setup Git remotes
         run: |
           cd .ci-temp/checkstyle
-          git remote add upstream https://github.com/checkstyle/checkstyle.git
+          git remote add upstream https://github.com/stoyanK7/checkstyle.git
           git remote add forked https://github.com/${{ steps.get_pr_details.outputs.fork_repo }}.git
           git fetch upstream
           git fetch forked
@@ -672,13 +672,6 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v6
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ env.AWS_REGION }}
-
       - name: Print config.xml
         run: |
           echo "Contents of config.xml:"
@@ -833,21 +826,21 @@ jobs:
           retention-days: 1
           if-no-files-found: error
 
-      - name: Copy Report to AWS S3 Bucket
+      - name: Create GitHub artifact link message
         env:
           LABEL: ${{ needs.download_configs.outputs.report_label }}
-          COMMIT_SHA: ${{ needs.checkout_and_cache.outputs.commit_sha }}
         run: |
-          bash
-          TIME=$(date +%Y%H%M%S)
-          FOLDER="${COMMIT_SHA}_$TIME"
-          DIFF="./.ci-temp/reports/diff"
-          LINK="https://${{env.AWS_BUCKET_NAME}}.s3.${{env.AWS_REGION}}.amazonaws.com"
-          aws s3 cp $DIFF "s3://${{env.AWS_BUCKET_NAME}}/$FOLDER/reports/diff/" --recursive
+          JOBS_LINK="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          ARTIFACT_NAME="checkstyle-regression-report-${{ needs.checkout_and_cache.outputs.commit_sha }}"
+
           if [ -n "$LABEL" ]; then
             echo "$LABEL: " > .ci-temp/message
           fi
-          echo "$LINK/$FOLDER/reports/diff/index.html" >> .ci-temp/message
+
+          {
+            echo "GitHub artifact: $JOBS_LINK"
+            echo "<br>Artifact name: $ARTIFACT_NAME"
+          } >> .ci-temp/message
 
       - name: Set output
         id: out
@@ -929,7 +922,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p .ci-temp
-          JOBS_LINK="https://github.com/checkstyle/checkstyle/actions/runs/${{github.run_id}}"
+          JOBS_LINK="https://github.com/stoyanK7/checkstyle/actions/runs/${{github.run_id}}"
           if [ "$ADD_SAD_RESULT" == "failure" ]; then
             {
               echo "Failed to add reaction to comment after cancellation."
@@ -1003,7 +996,7 @@ jobs:
               echo "<br>Link: $JOBS_LINK"
             } > .ci-temp/message
           elif [ -z "$MSG" ]; then
-            API_LINK="https://api.github.com/repos/checkstyle/checkstyle/actions/runs/${{github.run_id}}/jobs"
+            API_LINK="https://api.github.com/repos/stoyanK7/checkstyle/actions/runs/${{github.run_id}}/jobs"
             curl --fail-with-body -X GET "${API_LINK}" \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: token $GITHUB_TOKEN" \

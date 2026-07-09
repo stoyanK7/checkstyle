@@ -3,6 +3,7 @@
 #
 # Workflow starts when:
 # 1) issue comment - created
+# 2) workflow dispatch from GitHub UI
 #
 # Requirements:
 # 1) secrets.AWS_ACCESS_KEY_ID - access key for AWS S3 service user
@@ -17,11 +18,16 @@ env:
   AWS_BUCKET_NAME: "checkstyle-diff-reports"
   # yamllint disable-line rule:line-length
   DEFAULT_PROJECTS_LINK: "https://raw.githubusercontent.com/checkstyle/contribution/master/checkstyle-tester/projects-to-test-on-for-github-action.properties"
-  USER_LOGIN: ${{ github.event.issue.user.login }}
 
 on:
   issue_comment:
     types: [ created, edited ]
+  workflow_dispatch:
+    inputs:
+      pr-number:
+        description: 'PR number'
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -35,7 +41,7 @@ concurrency:
 jobs:
   # Parse PR Body, search for links to .properties and .xml files
   parse_body:
-    if: github.event.comment.body == 'GitHub, generate report'
+    if: github.event.comment.body == 'GitHub, generate report' || inputs.pr-number != ''
     runs-on: ubuntu-latest
     outputs:
       projects_link: ${{ steps.parse.outputs.projects_link }}
@@ -45,9 +51,11 @@ jobs:
       report_label: ${{ steps.parse.outputs.report_label }}
       branch: ${{ steps.branch.outputs.ref }}
       commit_sha: ${{ steps.branch.outputs.commit_sha }}
+      user_login: ${{ steps.branch.outputs.user_login }}
 
     steps:
       - name: React to comment
+        if: github.event_name == 'issue_comment'
         uses: actions/github-script@v9
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
@@ -64,22 +72,25 @@ jobs:
 
       - name: Getting PR description
         env:
-          ISSUE_BODY: ${{ github.event.issue.body }}
-          PULL_REQUEST_URL: ${{ github.event.issue.pull_request.url }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p .ci-temp
-          # convert windows line endings to unix in event text
-          echo "$ISSUE_BODY" > .ci-temp/windows.txt
-          tr -d '\15\32' < .ci-temp/windows.txt > .ci-temp/text
-
-          curl --fail-with-body -X GET "${PULL_REQUEST_URL}" \
+          if [ -z "${{ inputs.pr-number }}" ]; then
+            URL="${{ github.event.issue.pull_request.url }}"
+          else
+            URL="https://api.github.com/repos/checkstyle/checkstyle/pulls/${{ inputs.pr-number }}"
+          fi
+          curl --fail-with-body -X GET "$URL" \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: token $GITHUB_TOKEN" \
               -o .ci-temp/info.json
 
+          # convert windows line endings to unix in event text
+          jq --raw-output .body .ci-temp/info.json > .ci-temp/windows.txt
+          tr -d '\15\32' < .ci-temp/windows.txt > .ci-temp/text
           jq --raw-output .head.ref .ci-temp/info.json > .ci-temp/branch
           jq --raw-output .head.sha .ci-temp/info.json > .ci-temp/commit_sha
+          jq --raw-output .head.repo.owner.login .ci-temp/info.json > .ci-temp/user_login
 
       - name: Parsing content of PR description
         id: parse
@@ -92,6 +103,7 @@ jobs:
           ./.ci/append-to-github-output.sh "ref" "$(cat .ci-temp/branch)"
           # shellcheck disable=SC2002
           ./.ci/append-to-github-output.sh "commit_sha" "$(cat .ci-temp/commit_sha | cut -c 1-7)"
+          ./.ci/append-to-github-output.sh "user_login" "$(cat .ci-temp/user_login)"
 
           echo "GITHUB_OUTPUT:"
           # need to 'echo' to see output in Github CI
@@ -123,6 +135,8 @@ jobs:
       # set main checkstyle repo as an upstream
       # Diff report will be generated taking upstream's master branch as a base branch
       - name: set upstream
+        env:
+          USER_LOGIN: ${{ needs.parse_body.outputs.user_login }}
         run: |
           bash
           MAIN_REPO_GIT_URL="https://github.com/checkstyle/checkstyle.git"
@@ -252,7 +266,9 @@ jobs:
           ./.ci/append-to-github-output.sh "message" "$(cat .ci-temp/message)"
 
       - name: Comment PR
-        uses: checkstyle/contribution/comment-action@master
+        uses: peter-evans/create-or-update-comment@v5
         with:
-          message: ${{steps.out.outputs.message}}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ github.repository }}
+          issue-number: ${{ inputs.pr-number || github.event.issue.number }}
+          body: ${{ steps.out.outputs.message }}

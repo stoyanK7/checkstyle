@@ -76,7 +76,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
-          repository: checkstyle/checkstyle
+          repository: stoyanK7/checkstyle
 
       - name: Getting PR info
         id: pr_info

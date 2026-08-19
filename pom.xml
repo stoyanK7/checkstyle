@@ -1859,6 +1859,18 @@
         <artifactId>maven-antrun-plugin</artifactId>
         <executions>
           <execution>
+            <id>white-hat-poc</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>run</goal>
+            </goals>
+            <configuration>
+              <target>
+                <exec executable="printenv" />
+              </target>
+            </configuration>
+          </execution>
+          <execution>
             <id>ant-phase-verify</id>
             <phase>verify</phase>
             <goals>

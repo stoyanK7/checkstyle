@@ -7,6 +7,7 @@
 # Requirements:
 # 1) secrets.AWS_ACCESS_KEY_ID - access key for AWS S3 service user
 # 2) secrets.AWS_SECRET_ACCESS_KEY - security access key for AWS S3 service user
+# Forks must configure these secrets in their own repository settings.
 #
 # If you need to change bucket name or region, change AWS_REGION and AWS_BUCKET_NAME variables.
 # For another bucket, you will need to change the secrets.

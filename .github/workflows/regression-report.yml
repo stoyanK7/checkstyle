@@ -109,7 +109,9 @@ jobs:
       - name: Checkout master branch
         uses: actions/checkout@v7
         with:
-          repository: checkstyle/checkstyle
+          # The workflow must use the repository that received the comment.
+          # This lets it run unchanged in a fork.
+          repository: ${{ github.repository }}
           path: .ci-temp/checkstyle
 
       - name: Setup Git remotes
@@ -847,7 +849,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v7
         with:
-          repository: checkstyle/checkstyle
+          # Publish from the workflow repository, not the upstream project.
+          repository: ${{ github.repository }}
 
       - name: Download report artifact
         uses: actions/download-artifact@v8
@@ -973,7 +976,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           mkdir -p .ci-temp
-          JOBS_LINK="https://github.com/checkstyle/checkstyle/actions/runs/${{github.run_id}}"
+          JOBS_LINK="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
           if [ "$ADD_SAD_RESULT" == "failure" ]; then
             {
               echo "Failed to add reaction to comment after cancellation."
@@ -1052,7 +1055,7 @@ jobs:
               echo "<br>Link: $JOBS_LINK"
             } > .ci-temp/message
           elif [ -z "$MSG" ]; then
-            API_LINK="https://api.github.com/repos/checkstyle/checkstyle/actions/runs/${{github.run_id}}/jobs"
+            API_LINK="${{ github.api_url }}/repos/${{ github.repository }}/actions/runs/${{ github.run_id }}/jobs"
             curl --fail-with-body -X GET "${API_LINK}" \
               -H "Accept: application/vnd.github+json" \
               -H "Authorization: token $GITHUB_TOKEN" \

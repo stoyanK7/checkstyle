@@ -30,7 +30,7 @@ The latest release version can be found at
 [GitHub releases](https://github.com/checkstyle/checkstyle/releases/)
 or at [Maven repo](https://repo1.maven.org/maven2/com/puppycrawl/tools/checkstyle/).
 
-Documentation is available in HTML format, see [Checkstyle checks][checks-docs].
+Documentation s available in HTML format, see [Checkstyle checks][checks-docs].
 
 ## Table of Contents
 

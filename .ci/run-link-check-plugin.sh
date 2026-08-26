@@ -1,7 +1,7 @@
 #!/bin/bash
 # Checks HTML links in the generated site using lychee-maven-plugin.
 
-set -e
+set -euo pipefail
 
 echo "========================================="
 echo "Link Check Plugin"
@@ -15,7 +15,7 @@ echo "========================================="
 echo "Building site and checking links..."
 echo "========================================="
 
-OPTION=$1
+OPTION=${1:-}
 if [[ $OPTION == "--skip-external" ]]; then
   echo "Checking internal (checkstyle website) links only."
   ./mvnw -e --no-transfer-progress clean post-site -Pno-validations \

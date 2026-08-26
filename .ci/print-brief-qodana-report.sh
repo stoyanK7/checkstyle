@@ -1,6 +1,12 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
+
+if [[ "$#" != "1" ]]; then
+  echo "path to qodana JSON report is not set"
+  echo "Usage: $BASH_SOURCE <path to qodana JSON report>"
+  exit 1
+fi
 
 echo "Qodana Code Quality Brief Issues Report"
 

@@ -1,9 +1,10 @@
 #!/bin/bash
-set -e
+
+set -euo pipefail
 
 source ./.ci/util.sh
 
-if [[ -z $1 ]]; then
+if [[ "$#" != "1" ]]; then
   echo "version is not set"
   echo "Usage: $BASH_SOURCE <version>"
   exit 1

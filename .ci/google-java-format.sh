@@ -1,8 +1,8 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
-if [[ -z $1 ]]; then
+if [[ "$#" != "1" ]]; then
   echo "path to google-java-format-x.y.z-all-deps.jar is not set"
   echo "Usage: $BASH_SOURCE <path to jar>"
   exit 1

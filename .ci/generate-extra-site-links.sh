@@ -1,17 +1,17 @@
 #!/bin/bash
 
-set -e
+set -euo pipefail
 
 source ./.ci/util.sh
 
-PR_NUMBER=$1
-AWS_FOLDER_LINK=$2
-
-if [[ -z $PR_NUMBER || -z $AWS_FOLDER_LINK ]]; then
+if [[ "$#" != "2" ]]; then
   echo "not all parameters are set"
-  echo "Usage: $BASH_SCRIPT <pull request number> <aws folder link>"
+  echo "Usage: $BASH_SOURCE <pull request number> <aws folder link>"
   exit 1
 fi
+
+PR_NUMBER=$1
+AWS_FOLDER_LINK=$2
 
 checkForVariable "GITHUB_TOKEN"
 checkForVariable "GITHUB_REPOSITORY_OWNER"

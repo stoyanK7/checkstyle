@@ -1,8 +1,8 @@
-#!/bin/sh
+#!/bin/bash
 
 # This file is for manual execution only
 
-set -e
+set -euo pipefail
 
 echo "Building docker image"
 docker pull sonarqube

@@ -37,7 +37,7 @@ function getPomVersionWithoutSnapshot {
 
 function checkout_from {
   CLONE_URL=$1
-  TARGET_SHA=$2
+  TARGET_SHA=${2:-}
   PROJECT=$(echo "$CLONE_URL" | sed -nE 's/.*\/(.*).git/\1/p')
   mkdir -p .ci-temp
   cd .ci-temp

@@ -127,6 +127,16 @@
     <property name="message"
               value="Workflow job steps should have empty lines between each other"/>
   </module>
+  <module name="RegexpMultiline">
+    <property name="id" value="bashStrictMode"/>
+    <property name="format"
+              value="\A#![^\r\n]*\bbash\b\r?\n(?!(?:[ \t]*(?:#[^\r\n]*)?\r?\n)*set -euo pipefail(?:\r?\n|\z))"/>
+    <property name="fileExtensions" value="sh"/>
+    <property name="matchAcrossLines" value="true"/>
+    <property name="maximum" value="0"/>
+    <property name="message"
+              value="Bash scripts must use 'set -euo pipefail' before the first executable statement."/>
+  </module>
 
   <module name="RegexpSingleline">
     <property name="id" value="exampleMacroMustExist"/>

@@ -1,4 +1,6 @@
-#!/bin/sh
+#!/bin/bash
+
+set -euo pipefail
 
 # set checkstyle sonar profile
 curl --fail-with-body -X POST -u admin:admin \

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 source ./.ci/util.sh
 
 checkForVariable "SF_USER"
 
-if [[ -z $1 ]]; then
+if [[ "$#" != "1" ]]; then
   echo "Release version is not set"
   echo "usage: $BASH_SOURCE {release version}"
   exit 1

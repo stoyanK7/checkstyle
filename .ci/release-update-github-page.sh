@@ -1,9 +1,10 @@
 #!/bin/bash
-set -e
+
+set -euo pipefail
 
 source ./.ci/util.sh
 
-if [[ -z $1 ]]; then
+if [[ "$#" != "1" ]]; then
   echo "release number is not set"
   echo "usage: $BASH_SOURCE {release number}"
   exit 1

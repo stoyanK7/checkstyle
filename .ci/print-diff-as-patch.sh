@@ -1,7 +1,8 @@
 #!/bin/bash
-set -e
 
-if [ -z "$1" ]; then
+set -euo pipefail
+
+if [[ "$#" != "1" ]]; then
   echo "patch file-path not provided"
   echo "Usage: $0 <output_file_path>"
   exit 1

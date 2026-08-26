@@ -1,10 +1,11 @@
 #!/bin/bash
-set -e
+
+set -euo pipefail
 
 source ./.ci/util.sh
 checkForVariable "READ_ONLY_TOKEN"
 
-if [[ -z $1 ]]; then
+if [[ "$#" != "1" ]]; then
   echo "version is not set"
   echo "Usage: $BASH_SOURCE <version>"
   exit 1

@@ -1,10 +1,11 @@
 #!/bin/bash
-set -e
+
+set -euo pipefail
 
 DEFAULT_JAVA_RELEASE=21
-if [ -z "$1" ]; then
+if [[ "$#" != "2" ]]; then
     echo "No parameters supplied!"
-    echo "Usage %0 <CLASSPATH> [RELEASE]"
+    echo "Usage $BASH_SOURCE <CLASSPATH> [RELEASE]"
     echo "    CLASSPATH:  The classpath of the project and it's libraries to compile (required)."
     echo "    RELEASE:    The optional Java release. Default is ${DEFAULT_JAVA_RELEASE}."
     exit 1

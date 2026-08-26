@@ -1,13 +1,13 @@
 #!/usr/bin/env bash
 
-set -e
+set -euo pipefail
 
 source ./.ci/util.sh
 
 checkForVariable "GITHUB_TOKEN"
 checkForVariable "GITHUB_REPOSITORY_OWNER"
 
-if [[ -z $1 ]]; then
+if [[ "$#" != "1" ]]; then
   echo "version is not set"
   echo "Usage: $BASH_SOURCE <version>"
   exit 1

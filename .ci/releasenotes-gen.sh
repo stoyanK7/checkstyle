@@ -3,20 +3,11 @@
 # export READ_ONLY_TOKEN=9ffd28f
 #  && export DRONE_PULL_REQUEST="master" && ./.ci/releasenotes-gen.sh
 
-set -e
+set -euo pipefail
 
-if [ -z "$READ_ONLY_TOKEN" ]; then
-  echo "'READ_ONLY_TOKEN' not found, exiting..."
-  sleep 5s;
-  exit 1;
-fi
+source ./.ci/util.sh
 
-echo "PULL_REQUEST:""$PULL_REQUEST"
-if [[ $PULL_REQUEST =~ ^([0-9]+)$ ]]; then
-  echo "Build is not for Pull Request";
-  sleep 5s;
-  exit 0;
-fi
+checkForVariable "READ_ONLY_TOKEN"
 
 mkdir -p .ci-temp
 if [ -d .ci-temp/contribution ]; then

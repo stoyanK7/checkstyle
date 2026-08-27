@@ -40,7 +40,7 @@ public final class TokenTypes {
      *
      * <p>For example:</p>
      * {@snippet :
-     * import java.util.List;
+     * import java.util.Listaa;
      *
      * class MyClass{}
      * interface MyInterface{}
